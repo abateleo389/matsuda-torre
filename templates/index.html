@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MATSUDA - TORRE</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- =====================================================
+         MENU LATERAL
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <!-- LOGO MATSUDA -->
+        <div class="brand">
+            <img
+                src="{{ url_for('static', filename='img/matsuda-logo.png') }}"
+                alt="Matsuda"
+                class="matsuda-logo"
+            >
+        </div>
+
+
+        <!-- MENU -->
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('inicio') }}"
+               class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                PAINEL PRINCIPAL
+            </a>
+
+            <a href="{{ url_for('inicio') }}"
+               class="nav-item">
+                <i class="fa-solid fa-tower-cell"></i>
+                TORRE
+            </a>
+
+            <a href="{{ url_for('pagina_producao') }}"
+               class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                PRODUÇÃO
+            </a>
+
+            <a href="{{ url_for('pagina_paradas') }}"
+               class="nav-item">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                PARADAS
+            </a>
+
+            <a href="{{ url_for('pagina_historico') }}"
+               class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                HISTÓRICO
+            </a>
+
+            <a href="{{ url_for('pagina_relatorios') }}"
+               class="nav-item">
+                <i class="fa-solid fa-file-lines"></i>
+                RELATÓRIOS
+            </a>
+
+            <a href="{{ url_for('pagina_metas') }}"
+               class="nav-item">
+                <i class="fa-solid fa-bullseye"></i>
+                METAS
+            </a>
+
+            <a href="{{ url_for('configuracoes') }}"
+               class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                CONFIGURAÇÕES
+            </a>
+
+        </nav>
+
+
+        <!-- RODAPÉ DO MENU -->
+        <div class="sidebar-footer">
+
+            <div class="matsuda-badge">
+                <strong>MATSUDA</strong>
+                <small>Qualidade que alimenta o mundo</small>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+    ====================================================== -->
+
+    <div class="main-content">
+
+
+        <!-- =================================================
+             CABEÇALHO
+        ================================================== -->
+
+        <header class="top-header">
+
+            <div class="header-title">
+
+                <i class="fa-solid fa-tower-observation header-icon"></i>
+
+                <div>
+
+                    <h1>TORRE</h1>
+
+                    <span>
+                        LINHA DIREITA • Sistema de Controle de Produção
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- INFORMAÇÕES DO CABEÇALHO -->
+
+            <div class="header-info">
+
+
+                <!-- DATA -->
+
+                <div class="info-block">
+
+                    <i class="fa-regular fa-calendar-days"></i>
+
+                    <div>
+
+                        <strong id="current-date">
+                            --/--/----
+                        </strong>
+
+                        <small id="current-weekday">
+                            ---
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- HORÁRIO -->
+
+                <div class="info-block">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                    <div>
+
+                        <strong id="current-time">
+                            00:00:00
+                        </strong>
+
+                        <small>
+                            HORÁRIO ATUAL
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TURNO -->
+
+                <div class="info-block shift-badge">
+
+                    <i class="fa-solid
+                        {% if nome_turno == 'DIURNO' %}
+                            fa-sun
+                        {% else %}
+                            fa-moon
+                        {% endif %}">
+                    </i>
+
+                    <div>
+
+                        <small>
+                            TURNO ATUAL
+                        </small>
+
+                        <strong>
+                            {{ nome_turno }}
+                        </strong>
+
+                        <small>
+                            {{ horario_turno }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             DASHBOARD
+        ================================================== -->
+
+        <main class="dashboard-grid">
+
+
+            <!-- =================================================
+                 CARDS PRINCIPAIS
+            ================================================== -->
+
+            <section class="kpi-row">
+
+
+                <!-- SACOS -->
+
+                <div class="kpi-card">
+
+                    <span class="kpi-title">
+                        SACOS E PALETES FEITOS
+                    </span>
+
+                    <div class="kpi-body">
+
+                        <i class="fa-solid fa-boxes-stacked kpi-icon"></i>
+
+                        <div>
+
+                            <span class="kpi-value">
+                                {{ producao.sacos }}
+                            </span>
+
+                            <span class="kpi-unit">
+                                sacos ({{ producao.paletes }} paletes)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-footer">
+
+                        <small>
+                            Meta esperada:
+                            {{ "{:,}".format(configuracao.meta_esperada_sacos).replace(',', '.') }}
+                            sacos
+                            ({{ configuracao.meta_esperada_paletes }} paletes)
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- META -->
+
+                <div class="kpi-card">
+
+                    <span class="kpi-title">
+                        META DO DIA
+                    </span>
+
+                    <div class="kpi-body">
+
+                        <i class="fa-solid fa-bullseye kpi-icon"></i>
+
+                        <div>
+
+                            <span class="kpi-value">
+                                {{ configuracao.meta_minima }}
+                                -
+                                {{ configuracao.meta_maxima }}
+                            </span>
+
+                            <span class="kpi-unit">
+                                sacos
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-footer dual">
+
+                        <small>
+                            Mínima: {{ configuracao.meta_minima }}
+                        </small>
+
+                        <small>
+                            Máxima: {{ configuracao.meta_maxima }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RITMO -->
+
+                <div class="kpi-card">
+
+                    <span class="kpi-title">
+                        RITMO NECESSÁRIO
+                    </span>
+
+                    <div class="kpi-body">
+
+                        <i class="fa-solid fa-gauge-high kpi-icon"></i>
+
+                        <div>
+
+                            <span class="kpi-value">
+                                {{ configuracao.ritmo_minimo }}
+                                -
+                                {{ configuracao.ritmo_maximo }}
+                            </span>
+
+                            <span class="kpi-unit">
+                                sacos/hora
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-footer">
+
+                        <small>
+                            {{ configuracao.ritmo_minimo_paletes }}
+                            -
+                            {{ configuracao.ritmo_maximo_paletes }}
+                            paletes/hora
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TEMPO PARADO -->
+
+                <div class="kpi-card">
+
+                    <span class="kpi-title">
+                        TEMPO TOTAL PARADO
+                    </span>
+
+                    <div class="kpi-body">
+
+                        <i class="fa-solid fa-stopwatch kpi-icon warning"></i>
+
+                        <div>
+
+                            <span class="kpi-value alert">
+                                {{ tempo_parado }}
+                            </span>
+
+                            <span class="kpi-unit">
+                                acumulado hoje
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi-footer">
+
+                        <small>
+                            Histórico do dia
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CORPO DO DASHBOARD
+            ================================================== -->
+
+            <div class="dashboard-body">
+
+
+                <!-- =================================================
+                     COLUNA ESQUERDA
+                ================================================== -->
+
+                <div class="left-column">
+
+
+                    <!-- STATUS DA TORRE -->
+
+                    <section class="card status-banner">
+
+                        <div class="card-header dark-red">
+
+                            <h2>
+                                TORRE - LINHA DIREITA
+                            </h2>
+
+
+                            {% if parada_atual %}
+
+                                <span class="status-tag status-stopped">
+                                    🔴 PARADO
+                                </span>
+
+                            {% elif nome_turno != 'FORA DE TURNO' %}
+
+                                <span class="status-tag status-running">
+                                    🟢 PRODUZINDO
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-tag"
+                                      style="background: #64748b; color: white;">
+
+                                    ⏸️ FORA DE TURNO
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <div class="period-info">
+
+                                <i class="fa-regular fa-clock"></i>
+
+                                PERÍODO:
+                                {{ horario_turno }}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- MÉTRICAS -->
+
+                        <div class="status-content">
+
+
+                            <!-- RITMO -->
+
+                            <div class="metric-gauge">
+
+                                <span class="metric-label">
+                                    RITMO ATUAL
+                                </span>
+
+                                <div class="gauge-circle">
+
+                                    <span class="gauge-value">
+
+                                        {% if parada_atual or nome_turno == 'FORA DE TURNO' %}
+                                            0
+                                        {% else %}
+                                            318
+                                        {% endif %}
+
+                                    </span>
+
+                                    <span class="gauge-sub">
+                                        sacos/h
+                                    </span>
+
+                                </div>
+
+
+                                <small class="status-text">
+
+                                    {% if parada_atual %}
+
+                                        Parada em andamento
+
+                                    {% elif nome_turno == 'FORA DE TURNO' %}
+
+                                        Fora do horário
+
+                                    {% else %}
+
+                                        Produzindo agora
+
+                                    {% endif %}
+
+                                </small>
+
+                            </div>
+
+
+
+                            <!-- PROGRESSO -->
+
+                            <div class="metric-progress">
+
+                                <span class="metric-label">
+                                    PROGRESSO DO DIA
+                                </span>
+
+                                <span class="progress-percent">
+                                    {{ pct_progresso }}
+                                </span>
+
+                                <small>
+                                    Meta: {{ configuracao.meta_minima }} sacos
+                                </small>
+
+                                <div class="progress-bar lg">
+
+                                    <div
+                                        class="progress"
+                                        style="--largura: {{ largura_barra_css }};
+                                               width: var(--largura);">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- TEMPO DE PRODUÇÃO -->
+
+                            <div class="metric-time">
+
+                                <span class="metric-label">
+                                    TEMPO DE PRODUÇÃO
+                                </span>
+
+                                <div class="time-box">
+
+                                    <i class="fa-regular fa-clock"></i>
+
+                                    <strong>
+                                        05:15:00
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- TEMPO PARADO -->
+
+                            <div class="metric-time">
+
+                                <span class="metric-label">
+                                    TEMPO PARADO
+                                </span>
+
+                                <div class="time-box alert">
+
+                                    <i class="fa-regular fa-circle-pause"></i>
+
+                                    <strong>
+                                        {{ tempo_parado }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         GRÁFICOS
+                    ================================================== -->
+
+                    <div class="charts-row">
+
+
+                        <!-- GRÁFICO DE PRODUÇÃO -->
+
+                        <div class="card chart-card">
+
+                            <h3>
+                                PRODUÇÃO AO LONGO DO DIA
+                            </h3>
+
+                            <div class="chart-container">
+
+                                <canvas id="lineChart"></canvas>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- GRÁFICO DE PARADAS -->
+
+                        <div class="card chart-card">
+
+                            <h3>
+                                DISTRIBUIÇÃO DAS PARADAS
+                            </h3>
+
+                            <div class="chart-container donut-container">
+
+                                <canvas id="donutChart"></canvas>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         HISTÓRICO
+                    ================================================== -->
+
+                    <div class="tables-row">
+
+                        <div class="card table-card">
+
+                            <div class="card-header-simple">
+
+                                <h3>
+                                    HISTÓRICO RECENTE DE PARADAS
+                                </h3>
+
+                            </div>
+
+
+                            <div class="table-responsive">
+
+                                <table>
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                INÍCIO
+                                            </th>
+
+                                            <th>
+                                                FIM
+                                            </th>
+
+                                            <th>
+                                                MOTIVO
+                                            </th>
+
+                                            <th>
+                                                DURAÇÃO
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        {% for parada in paradas %}
+
+                                        <tr>
+
+                                            <td>
+
+                                                {% if parada.inicio %}
+                                                    {{ parada.inicio[11:16] }}
+                                                {% else %}
+                                                    --:--
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                {% if parada.fim %}
+                                                    {{ parada.fim[11:16] }}
+                                                {% else %}
+                                                    Em andamento
+                                                {% endif %}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <strong>
+                                                    {{ parada.motivo }}
+                                                </strong>
+
+                                            </td>
+
+
+                                            <td>
+
+                                                {% if parada.duracao %}
+                                                    {{ parada.duracao }}
+                                                {% else %}
+                                                    --:--
+                                                {% endif %}
+
+                                            </td>
+
+                                        </tr>
+
+                                        {% else %}
+
+                                        <tr>
+
+                                            <td colspan="4"
+                                                class="text-center">
+
+                                                Nenhuma parada registrada.
+
+                                            </td>
+
+                                        </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     COLUNA DIREITA
+                ================================================== -->
+
+                <div class="right-column">
+
+
+                    <!-- PARADAS DO DIA -->
+
+                    <section class="card stop-panel">
+
+                        <div class="card-header dark-red split">
+
+                            <span>
+                                PARADAS DO DIA
+                            </span>
+
+                            <strong>
+                                TOTAL: {{ tempo_parado }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="stop-list">
+
+                            {% for item in resumo_paradas %}
+
+                            <div class="stop-item">
+
+                                <i class="fa-solid fa-triangle-exclamation stop-icon"></i>
+
+                                <div class="stop-details">
+
+                                    <strong>
+                                        {{ item.motivo }}
+                                    </strong>
+
+                                    <span>
+                                        {{ item.tempo_str }}
+                                    </span>
+
+                                </div>
+
+                                <span class="stop-percentage">
+                                    {{ item.porcentagem }}
+                                </span>
+
+                            </div>
+
+                            {% else %}
+
+                            <p style="padding: 15px;
+                                      color: #888;
+                                      text-align: center;">
+
+                                Nenhuma parada registrada hoje.
+
+                            </p>
+
+                            {% endfor %}
+
+                        </div>
+
+
+
+                        <!-- PARADA ATUAL -->
+
+                        <div class="stop-action-container">
+
+                            {% if parada_atual %}
+
+                            <div class="current-stop-alert">
+
+                                <p>
+
+                                    <strong>
+                                        Parada Ativa:
+                                    </strong>
+
+                                    {{ parada_atual.motivo }}
+
+                                </p>
+
+
+                                <small>
+
+                                    Início:
+                                    {{ parada_atual.inicio[11:19] }}
+
+                                </small>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('encerrar_parada') }}">
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger full-width">
+
+                                        <i class="fa-solid fa-square"></i>
+
+                                        ENCERRAR PARADA
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                            {% else %}
+
+
+                            <!-- REGISTRAR PARADA -->
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('iniciar_parada') }}"
+                                class="stop-form">
+
+
+                                <select
+                                    name="motivo_id"
+                                    required
+                                    class="form-select">
+
+                                    <option value="">
+                                        Escolha o motivo da parada...
+                                    </option>
+
+                                    {% for motivo in motivos %}
+
+                                    <option value="{{ motivo.id }}">
+                                        {{ motivo.nome }}
+                                    </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger full-width">
+
+                                    <i class="fa-solid fa-plus"></i>
+
+                                    REGISTRAR PARADA
+
+                                </button>
+
+                            </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- REGISTRAR PRODUÇÃO -->
+
+                    <section class="card action-panel">
+
+                        <h3>
+                            REGISTRAR PRODUÇÃO
+                        </h3>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('registrar_producao') }}"
+                            class="inline-form">
+
+
+                            <input
+                                type="number"
+                                name="sacos"
+                                placeholder="Qtd Sacos Produzidos"
+                                min="1"
+                                required
+                                class="form-input"
+                                style="flex: 1;">
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger">
+
+                                REGISTRAR
+
+                            </button>
+
+                        </form>
+
+                    </section>
+
+
+
+                    <!-- TURNOS -->
+
+                    <section class="card shifts-panel">
+
+                        <div class="card-header dark-red">
+
+                            <h2>
+                                TURNOS DE PRODUÇÃO
+                            </h2>
+
+                        </div>
+
+
+                        <!-- TURNO DIURNO -->
+
+                        <div class="shift-item
+                            {% if nome_turno == 'DIURNO' %}
+                                active
+                            {% endif %}">
+
+                            <i class="fa-solid fa-sun shift-icon"></i>
+
+                            <div class="shift-info">
+
+                                <strong>
+                                    DIURNO
+                                </strong>
+
+                                <span>
+                                    {{ configuracao.inicio_dia }}
+                                    às
+                                    {{ configuracao.fim_dia }}
+                                </span>
+
+                            </div>
+
+
+                            {% if nome_turno == 'DIURNO' %}
+
+                                <span class="badge-status success">
+                                    EM ANDAMENTO
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge-status info">
+                                    AGUARDANDO
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+
+                        <!-- TURNO NOTURNO -->
+
+                        <div class="shift-item
+                            {% if nome_turno == 'NOTURNO' %}
+                                active
+                            {% endif %}">
+
+                            <i class="fa-solid fa-moon shift-icon"></i>
+
+                            <div class="shift-info">
+
+                                <strong>
+                                    NOTURNO
+                                </strong>
+
+                                <span>
+                                    {{ configuracao.inicio_noite }}
+                                    às
+                                    {{ configuracao.fim_noite }}
+                                </span>
+
+                            </div>
+
+
+                            {% if nome_turno == 'NOTURNO' %}
+
+                                <span class="badge-status success">
+                                    EM ANDAMENTO
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge-status info">
+                                    AGUARDANDO
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+
+        <!-- =================================================
+             RODAPÉ
+        ================================================== -->
+
+        <footer class="bottom-footer">
+
+            <div>
+                MATSUDA
+            </div>
+
+            <div>
+                TORRE | SISTEMA DE CONTROLE DE PRODUÇÃO
+            </div>
+
+            <div>
+                Versão 1.0.0
+            </div>
+
+        </footer>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =====================================================
+       RELÓGIO
+    ====================================================== */
+
+    function updateClock() {
+
+        const now = new Date();
+
+        document.getElementById('current-time').innerText =
+            now.toLocaleTimeString('pt-BR');
+
+        document.getElementById('current-date').innerText =
+            now.toLocaleDateString('pt-BR');
+
+        const weekdays = [
+            'DOMINGO',
+            'SEGUNDA-FEIRA',
+            'TERÇA-FEIRA',
+            'QUARTA-FEIRA',
+            'QUINTA-FEIRA',
+            'SEXTA-FEIRA',
+            'SÁBADO'
+        ];
+
+        document.getElementById('current-weekday').innerText =
+            weekdays[now.getDay()];
+    }
+
+
+    setInterval(updateClock, 1000);
+
+    updateClock();
+
+
+
+    /* =====================================================
+       GRÁFICO DE PRODUÇÃO
+    ====================================================== */
+
+    const ctxLine =
+        document.getElementById('lineChart').getContext('2d');
+
+
+    new Chart(ctxLine, {
+
+        type: 'line',
+
+        data: {
+
+            labels: [
+                '06:30',
+                '08:30',
+                '10:30',
+                '12:30',
+                '14:30',
+                '16:30',
+                '18:15'
+            ],
+
+            datasets: [
+
+                {
+
+                    label: 'Produzido (sacos)',
+
+                    data: [
+                        0,
+                        800,
+                        1600,
+                        2400,
+                        3100,
+                        3800,
+                        4200
+                    ],
+
+                    borderColor: '#c00000',
+
+                    backgroundColor:
+                        'rgba(192, 0, 0, 0.1)',
+
+                    fill: true,
+
+                    tension: 0.3
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false
+
+        }
+
+    });
+
+
+
+    /* =====================================================
+       GRÁFICO DE PARADAS
+    ====================================================== */
+
+    const ctxDonut =
+        document.getElementById('donutChart').getContext('2d');
+
+
+    new Chart(ctxDonut, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+                'Manutenção',
+                'Máq. Costura',
+                'Empilhadeira',
+                'Datadora'
+            ],
+
+            datasets: [
+
+                {
+
+                    data: [
+                        40,
+                        25,
+                        20,
+                        15
+                    ],
+
+                    backgroundColor: [
+                        '#c00000',
+                        '#e65100',
+                        '#f57c00',
+                        '#ffb74d'
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false
+
+        }
+
+    });
+
+</script>
+
+
+</body>
+</html>

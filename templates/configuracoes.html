@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATSUDA - CONFIGURAÇÕES</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="app-layout">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-text-fallback">MATSUDA</div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('inicio') }}" class="nav-item"><i class="fa-solid fa-house"></i> PAINEL PRINCIPAL</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-tower-cell"></i> TORRE</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i> PRODUÇÃO</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-circle-exclamation"></i> PARADAS</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> HISTÓRICO</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-file-lines"></i> RELATÓRIOS</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-bullseye"></i> METAS</a>
+                <a href="{{ url_for('configuracoes') }}" class="nav-item active"><i class="fa-solid fa-gear"></i> CONFIGURAÇÕES</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> USUÁRIOS</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="matsuda-badge">
+                    <strong>MATSUDA</strong>
+                    <small>Qualidade que alimenta o mundo</small>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+
+            <header class="top-header">
+                <div class="header-title">
+                    <i class="fa-solid fa-gear header-icon"></i>
+                    <div>
+                        <h1>CONFIGURAÇÕES</h1>
+                        <span>Ajuste de Metas, Ritmos, Turnos e Motivos de Parada</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px;">
+
+                <!-- FORMULÁRIO DE METAS E RITMOS -->
+                <section class="card" style="padding: 20px;">
+                    <h2 style="margin-bottom: 15px; color: #c00000; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                        <i class="fa-solid fa-bullseye"></i> METAS E RITMOS
+                    </h2>
+
+                    <form method="POST" action="{{ url_for('configuracoes') }}" style="display: flex; flex-direction: column; gap: 15px;">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label><strong>Meta Mínima (Sacos):</strong></label>
+                                <input type="number" name="meta_minima" value="{{ configuracao.meta_minima }}" required class="form-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label><strong>Meta Máxima (Sacos):</strong></label>
+                                <input type="number" name="meta_maxima" value="{{ configuracao.meta_maxima }}" required class="form-input" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label><strong>Meta Esperada (Sacos/Dia):</strong></label>
+                            <input type="number" name="meta_esperada_sacos" value="{{ configuracao.meta_esperada_sacos }}" required class="form-input" style="width: 100%;">
+                            <small style="color: #666;">Equivale a ~{{ configuracao.meta_esperada_paletes }} paletes/dia.</small>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label><strong>Ritmo Mínimo (Sacos/h):</strong></label>
+                                <input type="number" name="ritmo_minimo" value="{{ configuracao.ritmo_minimo }}" required class="form-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label><strong>Ritmo Máximo (Sacos/h):</strong></label>
+                                <input type="number" name="ritmo_maximo" value="{{ configuracao.ritmo_maximo }}" required class="form-input" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label><strong>Sacos por Palete (Padrão):</strong></label>
+                            <input type="number" name="sacos_por_palete" value="{{ configuracao.sacos_por_palete }}" required class="form-input" style="width: 100%;">
+                        </div>
+
+                        <h3 style="margin-top: 10px; color: #333; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <i class="fa-regular fa-clock"></i> Horários dos Turnos
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label>Início Turno Diurno:</label>
+                                <input type="time" name="inicio_dia" value="{{ configuracao.inicio_dia }}" required class="form-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label>Fim Turno Diurno:</label>
+                                <input type="time" name="fim_dia" value="{{ configuracao.fim_dia }}" required class="form-input" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label>Início Turno Noturno:</label>
+                                <input type="time" name="inicio_noite" value="{{ configuracao.inicio_noite }}" required class="form-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label>Fim Turno Noturno:</label>
+                                <input type="time" name="fim_noite" value="{{ configuracao.fim_noite }}" required class="form-input" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger" style="margin-top: 10px; padding: 12px;">
+                            <i class="fa-solid fa-floppy-disk"></i> SALVAR CONFIGURAÇÕES
+                        </button>
+                    </form>
+                </section>
+
+                <!-- GERENCIAMENTO DE MOTIVOS E LIMPEZA -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    
+                    <section class="card" style="padding: 20px;">
+                        <h2 style="margin-bottom: 15px; color: #c00000; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                            <i class="fa-solid fa-list"></i> MOTIVOS DE PARADA
+                        </h2>
+
+                        <form method="POST" action="{{ url_for('adicionar_motivo') }}" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <input type="text" name="nome" placeholder="Novo Motivo..." required class="form-input" style="flex: 1;">
+                            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-plus"></i> ADD</button>
+                        </form>
+
+                        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+                            {% for m in motivos %}
+                            <li style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8f9fa; border-radius: 4px; border: 1px solid #eee;">
+                                <span style="{% if not m.ativo %}text-decoration: line-through; color: #aaa;{% endif %}">
+                                    {{ m.nome }}
+                                </span>
+                                <form method="POST" action="{{ url_for('alternar_motivo', motivo_id=m.id) }}">
+                                    <button type="submit" class="btn" style="padding: 4px 8px; font-size: 0.8rem; background: {% if m.ativo %}#e65100{% else %}#2e7d32{% endif %}; color: white;">
+                                        {% if m.ativo %}Desativar{% else %}Ativar{% endif %}
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+
+                    <section class="card" style="padding: 20px; border-top: 4px solid #c00000;">
+                        <h2 style="margin-bottom: 15px; color: #c00000;">
+                            <i class="fa-solid fa-trash-can"></i> ZERAR DADOS DO DIA
+                        </h2>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <form method="POST" action="{{ url_for('zerar_producao_hoje') }}">
+                                <button type="submit" class="btn btn-danger full-width" onclick="return confirm('Zerar apenas a produção de hoje?')">
+                                    ZERAR PRODUÇÃO DE HOJE
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('zerar_paradas_hoje') }}">
+                                <button type="submit" class="btn btn-danger full-width" onclick="return confirm('Zerar apenas as paradas de hoje?')">
+                                    ZERAR PARADAS DE HOJE
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('zerar_tudo_hoje') }}">
+                                <button type="submit" class="btn btn-danger full-width" style="background: #800000;" onclick="return confirm('ZERAR TUDO HOJE? Esta ação não pode ser desfeita.')">
+                                    ZERAR TUDO HOJE
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                </div>
+
+            </main>
+
+        </div>
+    </div>
+
+</body>
+</html>

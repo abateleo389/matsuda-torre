@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>MATSUDA - HISTÓRICO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="brand"><div class="brand-text-fallback">MATSUDA</div></div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('inicio') }}" class="nav-item"><i class="fa-solid fa-house"></i> PAINEL PRINCIPAL</a>
+                <a href="{{ url_for('pagina_producao') }}" class="nav-item"><i class="fa-solid fa-chart-line"></i> PRODUÇÃO</a>
+                <a href="{{ url_for('pagina_paradas') }}" class="nav-item"><i class="fa-solid fa-circle-exclamation"></i> PARADAS</a>
+                <a href="{{ url_for('pagina_historico') }}" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> HISTÓRICO</a>
+                <a href="{{ url_for('pagina_relatorios') }}" class="nav-item"><i class="fa-solid fa-file-lines"></i> RELATÓRIOS</a>
+                <a href="{{ url_for('pagina_metas') }}" class="nav-item"><i class="fa-solid fa-bullseye"></i> METAS</a>
+                <a href="{{ url_for('configuracoes') }}" class="nav-item"><i class="fa-solid fa-gear"></i> CONFIGURAÇÕES</a>
+            </nav>
+        </aside>
+
+        <div class="main-content" style="padding: 20px;">
+            <header class="top-header">
+                <div class="header-title">
+                    <i class="fa-solid fa-clock-rotate-left header-icon"></i>
+                    <div>
+                        <h1>HISTÓRICO GERAL</h1>
+                        <span>Linha do Tempo de Ocorrências</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="card" style="padding: 20px; margin-top: 20px;">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TIPO</th>
+                                <th>DATA / HORA</th>
+                                <th>DETALHE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in historico %}
+                            <tr>
+                                <td><strong>{{ item.tipo }}</strong></td>
+                                <td>{{ item.data_inicio[8:10] }}/{{ item.data_inicio[5:7] }} - {{ item.data_inicio[11:16] }}</td>
+                                <td>{{ item.detalhe }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhum evento registrado.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

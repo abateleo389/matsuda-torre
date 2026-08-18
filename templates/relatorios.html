@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MATSUDA - RELATÓRIOS</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* =========================================================
+           RELATÓRIOS
+           ========================================================= */
+
+        .relatorios-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* FILTROS */
+
+        .filtros-relatorio {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filtro-grupo label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+        }
+
+        .filtro-grupo select,
+        .filtro-grupo input {
+            height: 40px;
+            padding: 0 12px;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+
+            outline: none;
+            font-size: 12px;
+
+            min-width: 150px;
+        }
+
+        .filtro-grupo select:focus,
+        .filtro-grupo input:focus {
+            border-color: #c90000;
+        }
+
+        .btn-consultar {
+            height: 40px;
+        }
+
+        /* RESUMO */
+
+        .resumo-relatorio {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .resumo-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+
+            padding: 18px;
+
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .resumo-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #fff0f0;
+            color: #c90000;
+
+            font-size: 20px;
+        }
+
+        .resumo-info span {
+            display: block;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+        }
+
+        .resumo-info strong {
+            display: block;
+
+            font-size: 23px;
+
+            margin-top: 3px;
+
+            color: #1e293b;
+        }
+
+        .resumo-info small {
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        /* GRID PRINCIPAL */
+
+        .relatorio-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        /* CARDS */
+
+        .relatorio-card {
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .relatorio-card-header {
+            padding: 14px 18px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .relatorio-card-header h2 {
+            font-size: 13px;
+            font-weight: 800;
+
+            color: #1e293b;
+        }
+
+        .relatorio-card-header i {
+            color: #c90000;
+        }
+
+        /* TABELA */
+
+        .tabela-relatorio {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabela-relatorio th {
+            background: #f8fafc;
+
+            font-size: 10px;
+
+            color: #64748b;
+
+            padding: 11px;
+
+            text-align: left;
+        }
+
+        .tabela-relatorio td {
+            padding: 11px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            font-size: 11px;
+        }
+
+        .tabela-relatorio tr:last-child td {
+            border-bottom: none;
+        }
+
+        .valor-producao {
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .percentual {
+            font-weight: 800;
+        }
+
+        .percentual.positivo {
+            color: #168a3a;
+        }
+
+        .percentual.negativo {
+            color: #c90000;
+        }
+
+        /* BARRA */
+
+        .barra-mini {
+            width: 100px;
+            height: 6px;
+
+            background: #e2e8f0;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .barra-mini div {
+            height: 100%;
+            background: #c90000;
+        }
+
+        /* CAUSAS DE PARADA */
+
+        .causa-item {
+            padding: 14px 18px;
+
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .causa-item:last-child {
+            border-bottom: none;
+        }
+
+        .causa-topo {
+            display: flex;
+            justify-content: space-between;
+
+            margin-bottom: 7px;
+        }
+
+        .causa-topo strong {
+            font-size: 11px;
+        }
+
+        .causa-topo span {
+            font-size: 11px;
+            font-weight: 800;
+            color: #c90000;
+        }
+
+        .barra-causa {
+            width: 100%;
+            height: 7px;
+
+            background: #e2e8f0;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .barra-causa div {
+            height: 100%;
+
+            background: #c90000;
+        }
+
+        .causa-tempo {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #64748b;
+
+            font-size: 10px;
+        }
+
+        /* MELHOR E PIOR DIA */
+
+        .dias-destaque {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+
+            padding: 18px;
+        }
+
+        .dia-destaque {
+            padding: 15px;
+
+            border-radius: 8px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+        }
+
+        .dia-destaque small {
+            display: block;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .dia-destaque strong {
+            display: block;
+
+            font-size: 20px;
+
+            margin-top: 5px;
+        }
+
+        .dia-destaque span {
+            font-size: 10px;
+
+            color: #64748b;
+        }
+
+        .dia-melhor {
+            border-left: 4px solid #168a3a;
+        }
+
+        .dia-pior {
+            border-left: 4px solid #c90000;
+        }
+
+        /* BOTÃO PDF */
+
+        .relatorio-acoes {
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+        .relatorio-acoes h3 {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .relatorio-acoes p {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .btn-pdf {
+            white-space: nowrap;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 1100px) {
+
+            .resumo-relatorio {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .relatorio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .resumo-relatorio {
+                grid-template-columns: 1fr;
+            }
+
+            .filtros-relatorio {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filtro-grupo select,
+            .filtro-grupo input {
+                width: 100%;
+            }
+
+            .dias-destaque {
+                grid-template-columns: 1fr;
+            }
+
+            .relatorio-acoes {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <div class="brand">
+
+                <img
+                    src="{{ url_for('static', filename='img/matsuda-logo.png') }}"
+                    alt="Matsuda"
+                    class="matsuda-logo"
+                >
+
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="{{ url_for('inicio') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-house"></i>
+                    PAINEL PRINCIPAL
+                </a>
+
+                <a
+                    href="{{ url_for('inicio') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-tower-cell"></i>
+                    TORRE
+                </a>
+
+                <a
+                    href="{{ url_for('pagina_producao') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-chart-line"></i>
+                    PRODUÇÃO
+                </a>
+
+                <a
+                    href="{{ url_for('pagina_paradas') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    PARADAS
+                </a>
+
+                <a
+                    href="{{ url_for('pagina_historico') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    HISTÓRICO
+                </a>
+
+                <a
+                    href="{{ url_for('pagina_relatorios') }}"
+                    class="nav-item active"
+                >
+                    <i class="fa-solid fa-file-lines"></i>
+                    RELATÓRIOS
+                </a>
+
+                <a
+                    href="{{ url_for('pagina_metas') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-bullseye"></i>
+                    METAS
+                </a>
+
+                <a
+                    href="{{ url_for('configuracoes') }}"
+                    class="nav-item"
+                >
+                    <i class="fa-solid fa-gear"></i>
+                    CONFIGURAÇÕES
+                </a>
+
+            </nav>
+
+        </div>
+
+        <div class="sidebar-footer">
+
+            <div class="matsuda-badge">
+
+                <strong>MATSUDA</strong>
+
+                <small>
+                    Qualidade que alimenta o mundo
+                </small>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================================
+         CONTEÚDO
+         ========================================================= -->
+
+    <div class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-title">
+
+                <i class="fa-solid fa-file-lines header-icon"></i>
+
+                <div>
+
+                    <h1>RELATÓRIOS</h1>
+
+                    <span>
+                        Análise de produção e paradas da linha
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <div class="dashboard-grid">
+
+            <div class="relatorios-container">
+
+
+                <!-- =================================================
+                     FILTROS
+                     ================================================= -->
+
+                <form
+                    method="GET"
+                    action="{{ url_for('pagina_relatorios') }}"
+                    class="filtros-relatorio"
+                >
+
+                    <div class="filtro-grupo">
+
+                        <label>
+                            PERÍODO
+                        </label>
+
+                        <select
+                            name="periodo"
+                            id="periodo"
+                            onchange="alterarPeriodo()"
+                        >
+
+                            <option
+                                value="hoje"
+                                {% if periodo == 'hoje' %}selected{% endif %}
+                            >
+                                Hoje
+                            </option>
+
+                            <option
+                                value="ontem"
+                                {% if periodo == 'ontem' %}selected{% endif %}
+                            >
+                                Ontem
+                            </option>
+
+                            <option
+                                value="7dias"
+                                {% if periodo == '7dias' %}selected{% endif %}
+                            >
+                                Últimos 7 dias
+                            </option>
+
+                            <option
+                                value="mes"
+                                {% if periodo == 'mes' %}selected{% endif %}
+                            >
+                                Este mês
+                            </option>
+
+                            <option
+                                value="personalizado"
+                                {% if request.args.get('inicio') %}selected{% endif %}
+                            >
+                                Período personalizado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        class="filtro-grupo"
+                        id="grupoInicio"
+                    >
+
+                        <label>
+                            DATA INICIAL
+                        </label>
+
+                        <input
+                            type="date"
+                            name="inicio"
+                            value="{{ relatorio.data_inicio }}"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="filtro-grupo"
+                        id="grupoFim"
+                    >
+
+                        <label>
+                            DATA FINAL
+                        </label>
+
+                        <input
+                            type="date"
+                            name="fim"
+                            value="{{ relatorio.data_fim }}"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger btn-consultar"
+                    >
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                        CONSULTAR
+
+                    </button>
+
+                </form>
+
+
+                <!-- =================================================
+                     RESUMO
+                     ================================================= -->
+
+                <div class="resumo-relatorio">
+
+
+                    <div class="resumo-card">
+
+                        <div class="resumo-icon">
+
+                            <i class="fa-solid fa-box"></i>
+
+                        </div>
+
+                        <div class="resumo-info">
+
+                            <span>
+                                Produção total
+                            </span>
+
+                            <strong>
+                                {{ "{:,}".format(relatorio.producao_total).replace(",", ".") }}
+                            </strong>
+
+                            <small>
+                                sacos
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resumo-card">
+
+                        <div class="resumo-icon">
+
+                            <i class="fa-solid fa-chart-column"></i>
+
+                        </div>
+
+                        <div class="resumo-info">
+
+                            <span>
+                                Média por dia
+                            </span>
+
+                            <strong>
+                                {{ "{:,}".format(relatorio.media_diaria).replace(",", ".") }}
+                            </strong>
+
+                            <small>
+                                sacos/dia
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resumo-card">
+
+                        <div class="resumo-icon">
+
+                            <i class="fa-solid fa-stopwatch"></i>
+
+                        </div>
+
+                        <div class="resumo-info">
+
+                            <span>
+                                Tempo parado
+                            </span>
+
+                            <strong style="font-size: 20px;">
+                                {{ relatorio.tempo_parado }}
+                            </strong>
+
+                            <small>
+                                total
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resumo-card">
+
+                        <div class="resumo-icon">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        </div>
+
+                        <div class="resumo-info">
+
+                            <span>
+                                Total de paradas
+                            </span>
+
+                            <strong>
+                                {{ relatorio.total_paradas }}
+                            </strong>
+
+                            <small>
+                                ocorrências
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     GRID
+                     ================================================= -->
+
+                <div class="relatorio-grid">
+
+
+                    <!-- =============================================
+                         PRODUÇÃO POR DIA
+                         ============================================= -->
+
+                    <div class="relatorio-card">
+
+                        <div class="relatorio-card-header">
+
+                            <h2>
+
+                                <i class="fa-solid fa-calendar-days"></i>
+
+                                PRODUÇÃO POR DIA
+
+                            </h2>
+
+                            <span style="font-size:10px;color:#64748b;">
+
+                                {{ relatorio.data_inicio[8:10] }}/{{ relatorio.data_inicio[5:7] }}/{{ relatorio.data_inicio[0:4] }}
+
+                                até
+
+                                {{ relatorio.data_fim[8:10] }}/{{ relatorio.data_fim[5:7] }}/{{ relatorio.data_fim[0:4] }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            <table class="tabela-relatorio">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>DATA</th>
+
+                                        <th>PRODUÇÃO</th>
+
+                                        <th>PALETES</th>
+
+                                        <th>META</th>
+
+                                        <th>EFICIÊNCIA</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {% for dia in relatorio.dias %}
+
+                                    <tr>
+
+                                        <td>
+                                            <strong>
+                                                {{ dia.data_formatada }}
+                                            </strong>
+                                        </td>
+
+                                        <td class="valor-producao">
+
+                                            {{ "{:,}".format(dia.sacos).replace(",", ".") }}
+
+                                            sacos
+
+                                        </td>
+
+                                        <td>
+                                            {{ dia.paletes }}
+                                        </td>
+
+                                        <td>
+                                            {{ "{:,}".format(dia.meta).replace(",", ".") }}
+                                        </td>
+
+                                        <td>
+
+                                            <span
+                                                class="percentual {% if dia.percentual >= 100 %}positivo{% else %}negativo{% endif %}"
+                                            >
+                                                {{ dia.percentual }}%
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                    {% else %}
+
+                                    <tr>
+
+                                        <td
+                                            colspan="5"
+                                            style="text-align:center;padding:30px;color:#64748b;"
+                                        >
+                                            Nenhuma produção registrada neste período.
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =============================================
+                         CAUSAS DE PARADA
+                         ============================================= -->
+
+                    <div class="relatorio-card">
+
+                        <div class="relatorio-card-header">
+
+                            <h2>
+
+                                <i class="fa-solid fa-circle-exclamation"></i>
+
+                                CAUSAS DE PARADA
+
+                            </h2>
+
+                        </div>
+
+
+                        {% if relatorio.resumo_motivos %}
+
+                            {% for causa in relatorio.resumo_motivos %}
+
+                            <div class="causa-item">
+
+                                <div class="causa-topo">
+
+                                    <strong>
+                                        {{ causa.motivo }}
+                                    </strong>
+
+                                    <span>
+                                        {{ causa.percentual }}%
+                                    </span>
+
+                                </div>
+
+                                <div class="barra-causa">
+
+                                    <div
+                                        style="width: {{ causa.percentual }}%;"
+                                    ></div>
+
+                                </div>
+
+                                <small class="causa-tempo">
+
+                                    Tempo parado:
+                                    <strong>
+                                        {{ causa.tempo }}
+                                    </strong>
+
+                                </small>
+
+                            </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <div
+                                style="padding:30px;text-align:center;color:#64748b;"
+                            >
+
+                                <i
+                                    class="fa-solid fa-circle-check"
+                                    style="font-size:30px;color:#168a3a;margin-bottom:10px;"
+                                ></i>
+
+                                <br>
+
+                                Nenhuma parada registrada neste período.
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     MELHOR / PIOR DIA
+                     ================================================= -->
+
+                <div class="relatorio-card">
+
+                    <div class="relatorio-card-header">
+
+                        <h2>
+
+                            <i class="fa-solid fa-ranking-star"></i>
+
+                            DESEMPENHO DO PERÍODO
+
+                        </h2>
+
+                    </div>
+
+
+                    <div class="dias-destaque">
+
+
+                        <div class="dia-destaque dia-melhor">
+
+                            <small>
+                                MELHOR DIA
+                            </small>
+
+                            {% if relatorio.melhor_dia %}
+
+                                <strong>
+                                    {{ "{:,}".format(relatorio.melhor_dia.sacos).replace(",", ".") }}
+                                    sacos
+                                </strong>
+
+                                <span>
+                                    {{ relatorio.melhor_dia.data_formatada }}
+                                </span>
+
+                            {% else %}
+
+                                <strong>
+                                    —
+                                </strong>
+
+                                <span>
+                                    Sem produção
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="dia-destaque dia-pior">
+
+                            <small>
+                                MENOR PRODUÇÃO
+                            </small>
+
+                            {% if relatorio.pior_dia %}
+
+                                <strong>
+                                    {{ "{:,}".format(relatorio.pior_dia.sacos).replace(",", ".") }}
+                                    sacos
+                                </strong>
+
+                                <span>
+                                    {{ relatorio.pior_dia.data_formatada }}
+                                </span>
+
+                            {% else %}
+
+                                <strong>
+                                    —
+                                </strong>
+
+                                <span>
+                                    Sem produção
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     RESUMO DO MÊS / PERÍODO
+                     ================================================= -->
+
+                <div class="relatorio-card">
+
+                    <div class="relatorio-card-header">
+
+                        <h2>
+
+                            <i class="fa-solid fa-chart-pie"></i>
+
+                            RESUMO DO PERÍODO
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display:grid;
+                            grid-template-columns:repeat(3,1fr);
+                            gap:20px;
+                            padding:20px;
+                        "
+                    >
+
+                        <div>
+
+                            <span
+                                style="
+                                    display:block;
+                                    font-size:10px;
+                                    color:#64748b;
+                                    font-weight:700;
+                                "
+                            >
+                                PALETES PRODUZIDOS
+                            </span>
+
+                            <strong
+                                style="
+                                    display:block;
+                                    font-size:22px;
+                                    margin-top:5px;
+                                "
+                            >
+                                {{ relatorio.total_paletes }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span
+                                style="
+                                    display:block;
+                                    font-size:10px;
+                                    color:#64748b;
+                                    font-weight:700;
+                                "
+                            >
+                                DIAS ACIMA DA META
+                            </span>
+
+                            <strong
+                                style="
+                                    display:block;
+                                    font-size:22px;
+                                    margin-top:5px;
+                                    color:#168a3a;
+                                "
+                            >
+                                {{ relatorio.dias_acima_meta }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span
+                                style="
+                                    display:block;
+                                    font-size:10px;
+                                    color:#64748b;
+                                    font-weight:700;
+                                "
+                            >
+                                DIAS ABAIXO DA META
+                            </span>
+
+                            <strong
+                                style="
+                                    display:block;
+                                    font-size:22px;
+                                    margin-top:5px;
+                                    color:#c90000;
+                                "
+                            >
+                                {{ relatorio.dias_abaixo_meta }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PDF
+                     ================================================= -->
+
+                <div class="relatorio-acoes">
+
+                    <div>
+
+                        <h3>
+                            Exportar relatório
+                        </h3>
+
+                        <p>
+                            Gere o relatório completo do período selecionado em PDF.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="btn btn-danger btn-pdf"
+                        onclick="gerarPDF()"
+                    >
+
+                        <i class="fa-solid fa-file-pdf"></i>
+
+                        BAIXAR RELATÓRIO PDF
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================================================
+       MOSTRAR / ESCONDER DATAS
+       ========================================================= */
+
+    function alterarPeriodo() {
+
+        const periodo =
+            document.getElementById("periodo").value;
+
+        const grupoInicio =
+            document.getElementById("grupoInicio");
+
+        const grupoFim =
+            document.getElementById("grupoFim");
+
+        if (periodo === "personalizado") {
+
+            grupoInicio.style.display = "flex";
+            grupoFim.style.display = "flex";
+
+        } else {
+
+            grupoInicio.style.display = "none";
+            grupoFim.style.display = "none";
+
+        }
+
+    }
+
+
+    /* Executar ao carregar */
+
+    alterarPeriodo();
+
+
+    /* =========================================================
+       PDF
+       ========================================================= */
+
+    function gerarPDF() {
+
+        /*
+         * Por enquanto mantém a função visual.
+         *
+         * Quando você me mandar a rota/arquivo responsável
+         * pelo PDF antigo, podemos ligar este botão diretamente
+         * a ele sem perder o PDF que você já possui.
+         */
+
+        window.print();
+
+    }
+
+</script>
+
+</body>
+
+</html>

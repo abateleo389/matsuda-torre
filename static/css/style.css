@@ -1,0 +1,973 @@
+/* ==========================================================================
+   MATSUDA - TORRE | SISTEMA DE CONTROLE DE PRODUÇÃO
+   ESTILO DASHBOARD INDUSTRIAL (SCADA / BI)
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --vermelho-matsuda: #c90000;
+    --vermelho-escuro: #8b0000;
+    --vermelho-soft: #fff0f0;
+    --vermelho-hover: #b00000;
+
+    --verde-sucesso: #168a3a;
+    --verde-soft: #eaf8ef;
+    --amarelo-alerta: #d97706;
+    --amarelo-soft: #fef3c7;
+
+    --cinza-fundo: #f4f5f7;
+    --cinza-card: #ffffff;
+    --cinza-borda: #e2e8f0;
+    --cinza-texto: #475569;
+    --cinza-suave: #64748b;
+    --cinza-escuro: #1e293b;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--cinza-fundo);
+    color: var(--cinza-escuro);
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   LAYOUT GERAL (SIDEBAR + MAIN CONTENT)
+   ========================================================================== */
+
+.app-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+}
+
+/* SIDEBAR LATERAL */
+
+.sidebar {
+    background: #ffffff;
+    border-right: 1px solid var(--cinza-borda);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+/* ==========================================================================
+   LOGO MATSUDA
+   ========================================================================== */
+
+.brand {
+    height: 95px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--cinza-borda);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+}
+
+.matsuda-logo {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: 210px;
+    max-height: 85px;
+
+    object-fit: contain;
+}
+
+/* Caso queira manter o texto como alternativa */
+
+.brand-text-fallback {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--vermelho-matsuda);
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   MENU LATERAL
+   ========================================================================== */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 24px;
+
+    color: var(--cinza-texto);
+    text-decoration: none;
+
+    font-weight: 700;
+    font-size: 12px;
+
+    transition: all 0.2s ease;
+}
+
+.nav-item i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-item:hover {
+    background-color: var(--vermelho-soft);
+    color: var(--vermelho-matsuda);
+}
+
+.nav-item.active {
+    background-color: var(--vermelho-matsuda);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   RODAPÉ DA SIDEBAR
+   ========================================================================== */
+
+.sidebar-footer {
+    padding: 15px;
+    margin: 0 15px;
+
+    background-color: var(--vermelho-soft);
+
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+
+    text-align: center;
+}
+
+.matsuda-badge strong {
+    display: block;
+    color: var(--vermelho-matsuda);
+    font-size: 14px;
+}
+
+.matsuda-badge small {
+    color: var(--vermelho-escuro);
+    font-size: 10px;
+}
+
+/* ==========================================================================
+   MAIN CONTENT AREA
+   ========================================================================== */
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   TOP HEADER BAR
+   ========================================================================== */
+
+.top-header {
+    background: linear-gradient(
+        135deg,
+        var(--vermelho-matsuda),
+        var(--vermelho-escuro)
+    );
+
+    color: #ffffff;
+
+    padding: 15px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    font-size: 32px;
+}
+
+.header-title h1 {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.header-title span {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.info-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border-right: 1px solid rgba(255,255,255,0.2);
+
+    padding-right: 20px;
+}
+
+.info-block:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.info-block i {
+    font-size: 20px;
+}
+
+.info-block strong {
+    display: block;
+    font-size: 14px;
+}
+
+.info-block small {
+    display: block;
+    font-size: 10px;
+    opacity: 0.85;
+}
+
+.shift-badge {
+    background: rgba(255,255,255,0.15);
+    padding: 6px 14px;
+    border-radius: 6px;
+}
+
+/* ==========================================================================
+   DASHBOARD GRID & KPI CARDS
+   ========================================================================== */
+
+.dashboard-grid {
+    padding: 20px 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.kpi-card {
+    background: #ffffff;
+
+    border-radius: 10px;
+    padding: 16px;
+
+    border: 1px solid var(--cinza-borda);
+
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.kpi-title {
+    font-size: 11px;
+    font-weight: 700;
+
+    color: var(--cinza-suave);
+
+    letter-spacing: 0.5px;
+}
+
+.kpi-body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin: 10px 0;
+}
+
+.kpi-icon {
+    font-size: 24px;
+    color: var(--vermelho-matsuda);
+}
+
+.kpi-icon.warning {
+    color: var(--amarelo-alerta);
+}
+
+.kpi-value {
+    font-size: 26px;
+    font-weight: 800;
+
+    color: var(--cinza-escuro);
+
+    line-height: 1;
+}
+
+.kpi-value.alert {
+    color: var(--vermelho-matsuda);
+}
+
+.kpi-unit {
+    font-size: 11px;
+    color: var(--cinza-suave);
+
+    display: block;
+}
+
+.kpi-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 11px;
+    color: var(--cinza-suave);
+
+    border-top: 1px dashed var(--cinza-borda);
+
+    padding-top: 8px;
+}
+
+.kpi-footer.dual {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* ==========================================================================
+   CORPO PRINCIPAL (2 COLUNAS)
+   ========================================================================== */
+
+.dashboard-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ==========================================================================
+   CARDS GENÉRICOS
+   ========================================================================== */
+
+.card {
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    border: 1px solid var(--cinza-borda);
+
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+
+    overflow: hidden;
+}
+
+.card h3 {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--cinza-escuro);
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+.card-header.dark-red {
+    background: var(--vermelho-matsuda);
+
+    color: #ffffff;
+
+    padding: 12px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header.dark-red h2 {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.card-header.dark-red.split {
+    font-weight: 800;
+}
+
+.card-header-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-right: 18px;
+}
+
+/* ==========================================================================
+   STATUS BANNER DA LINHA
+   ========================================================================== */
+
+.status-tag {
+    padding: 4px 12px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.status-running {
+    background-color: var(--verde-sucesso);
+    color: #ffffff;
+}
+
+.status-stopped {
+    background-color: #ffffff;
+    color: var(--vermelho-matsuda);
+}
+
+.period-info {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.status-content {
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+
+    text-align: center;
+}
+
+.metric-label {
+    display: block;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: var(--cinza-suave);
+
+    margin-bottom: 8px;
+}
+
+.gauge-circle {
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+
+    border: 6px solid var(--vermelho-matsuda);
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 auto 6px auto;
+}
+
+.gauge-value {
+    font-size: 22px;
+    font-weight: 800;
+
+    color: var(--vermelho-matsuda);
+
+    line-height: 1;
+}
+
+.gauge-sub {
+    font-size: 9px;
+    color: var(--cinza-suave);
+}
+
+.progress-percent {
+    font-size: 26px;
+    font-weight: 800;
+
+    color: var(--vermelho-matsuda);
+
+    display: block;
+}
+
+.time-box {
+    font-size: 20px;
+    font-weight: 800;
+
+    color: var(--cinza-escuro);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    margin: 8px 0;
+}
+
+.time-box.alert {
+    color: var(--vermelho-matsuda);
+}
+
+/* ==========================================================================
+   PROGRESS BARS
+   ========================================================================== */
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+
+    background-color: var(--cinza-borda);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    margin: 6px 0;
+}
+
+.progress-bar.lg {
+    height: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--vermelho-matsuda);
+}
+
+/* ==========================================================================
+   GRÁFICOS
+   ========================================================================== */
+
+.charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+.chart-container {
+    padding: 15px;
+
+    height: 220px;
+
+    position: relative;
+}
+
+/* ==========================================================================
+   TABELAS
+   ========================================================================== */
+
+.tables-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 11px;
+}
+
+th {
+    background-color: #f8fafc;
+
+    color: var(--cinza-suave);
+
+    text-align: left;
+
+    padding: 10px 12px;
+
+    font-weight: 700;
+
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+td {
+    padding: 10px 12px;
+
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.link-more {
+    font-size: 10px;
+
+    color: var(--vermelho-matsuda);
+
+    text-decoration: none;
+
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   BADGES & CORES DE TEXTO
+   ========================================================================== */
+
+.badge {
+    padding: 2px 6px;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.badge.success {
+    color: var(--verde-sucesso);
+}
+
+.badge-status {
+    padding: 3px 8px;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.badge-status.success {
+    background-color: var(--verde-soft);
+    color: var(--verde-sucesso);
+}
+
+.badge-status.warning {
+    background-color: var(--vermelho-soft);
+    color: var(--vermelho-matsuda);
+}
+
+.badge-status.info {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.text-green {
+    color: var(--verde-sucesso);
+    font-weight: 700;
+}
+
+.text-red {
+    color: var(--vermelho-matsuda);
+    font-weight: 700;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ==========================================================================
+   PAINEL DIREITO DE PARADAS
+   ========================================================================== */
+
+.stop-list {
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.stop-item {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px;
+
+    background-color: #f8fafc;
+
+    border-radius: 8px;
+
+    border: 1px solid var(--cinza-borda);
+}
+
+.stop-icon {
+    font-size: 20px;
+
+    color: var(--vermelho-matsuda);
+
+    width: 25px;
+
+    text-align: center;
+}
+
+.stop-details {
+    flex: 1;
+}
+
+.stop-details strong {
+    display: block;
+
+    font-size: 11px;
+
+    color: var(--cinza-escuro);
+}
+
+.stop-details span {
+    font-size: 11px;
+
+    color: var(--cinza-suave);
+}
+
+.stop-percentage {
+    font-weight: 800;
+
+    color: var(--cinza-escuro);
+}
+
+.stop-action-container {
+    padding: 15px;
+
+    border-top: 1px solid var(--cinza-borda);
+
+    background-color: #fafafa;
+}
+
+.current-stop-alert {
+    background: var(--vermelho-soft);
+
+    border: 1px solid #fecaca;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   FORMULÁRIOS E BOTÕES
+   ========================================================================== */
+
+.form-select,
+.form-input {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--cinza-borda);
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    margin-bottom: 10px;
+
+    outline: none;
+}
+
+.form-select:focus,
+.form-input:focus {
+    border-color: var(--vermelho-matsuda);
+}
+
+.inline-form {
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 16px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-weight: 800;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    transition: background-color 0.2s ease;
+}
+
+.btn-danger {
+    background-color: var(--vermelho-matsuda);
+
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: var(--vermelho-hover);
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ==========================================================================
+   TURNOS
+   ========================================================================== */
+
+.shifts-panel {
+    padding-bottom: 5px;
+}
+
+.shift-item {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 18px;
+
+    border-bottom: 1px solid var(--cinza-borda);
+}
+
+.shift-item:last-child {
+    border-bottom: none;
+}
+
+.shift-icon {
+    font-size: 20px;
+
+    color: var(--amarelo-alerta);
+}
+
+.shift-info strong {
+    display: block;
+
+    font-size: 12px;
+}
+
+.shift-info span {
+    font-size: 10px;
+
+    color: var(--cinza-suave);
+}
+
+/* ==========================================================================
+   RODAPÉ
+   ========================================================================== */
+
+.bottom-footer {
+    background-color: var(--vermelho-escuro);
+
+    color: #ffffff;
+
+    padding: 10px 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 11px;
+
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+
+    .kpi-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dashboard-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .app-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .charts-row,
+    .tables-row {
+        grid-template-columns: 1fr;
+    }
+
+    .status-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .kpi-row {
+        grid-template-columns: 1fr;
+    }
+
+    .top-header {
+        flex-direction: column;
+
+        gap: 15px;
+
+        align-items: flex-start;
+    }
+
+    .header-info {
+        flex-wrap: wrap;
+
+        gap: 10px;
+    }
+}

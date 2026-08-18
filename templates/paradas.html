@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>MATSUDA - PARADAS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="brand"><div class="brand-text-fallback">MATSUDA</div></div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('inicio') }}" class="nav-item"><i class="fa-solid fa-house"></i> PAINEL PRINCIPAL</a>
+                <a href="{{ url_for('pagina_producao') }}" class="nav-item"><i class="fa-solid fa-chart-line"></i> PRODUÇÃO</a>
+                <a href="{{ url_for('pagina_paradas') }}" class="nav-item active"><i class="fa-solid fa-circle-exclamation"></i> PARADAS</a>
+                <a href="{{ url_for('pagina_historico') }}" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> HISTÓRICO</a>
+                <a href="{{ url_for('pagina_relatorios') }}" class="nav-item"><i class="fa-solid fa-file-lines"></i> RELATÓRIOS</a>
+                <a href="{{ url_for('pagina_metas') }}" class="nav-item"><i class="fa-solid fa-bullseye"></i> METAS</a>
+                <a href="{{ url_for('configuracoes') }}" class="nav-item"><i class="fa-solid fa-gear"></i> CONFIGURAÇÕES</a>
+            </nav>
+        </aside>
+
+        <div class="main-content" style="padding: 20px;">
+            <header class="top-header">
+                <div class="header-title">
+                    <i class="fa-solid fa-circle-exclamation header-icon"></i>
+                    <div>
+                        <h1>GESTÃO DE PARADAS</h1>
+                        <span>Controle de Interrupções e Motivos</span>
+                    </div>
+                </div>
+            </header>
+
+            <section class="card" style="padding: 20px; margin-top: 20px;">
+                <form method="POST" action="{{ url_for('iniciar_parada') }}" class="stop-form" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <select name="motivo_id" required class="form-select" style="flex: 1;">
+                        <option value="">Escolha o motivo da parada...</option>
+                        {% for motivo in motivos %}
+                            <option value="{{ motivo.id }}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-plus"></i> INICIAR PARADA</button>
+                </form>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>INÍCIO</th>
+                                <th>FIM</th>
+                                <th>MOTIVO</th>
+                                <th>DURAÇÃO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for parada in paradas %}
+                            <tr>
+                                <td>{{ parada.inicio[8:10] }}/{{ parada.inicio[5:7] }} - {{ parada.inicio[11:16] }}</td>
+                                <td>{% if parada.fim %}{{ parada.fim[11:16] }}{% else %}<strong style="color: red;">Em andamento</strong>{% endif %}</td>
+                                <td><strong>{{ parada.motivo }}</strong></td>
+                                <td>{% if parada.duracao %}{{ parada.duracao }}{% else %}--:--{% endif %}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhuma parada registrada.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
